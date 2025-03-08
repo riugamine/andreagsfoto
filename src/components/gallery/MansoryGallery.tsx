@@ -1,4 +1,5 @@
-import Image from 'next/image'
+import Image from 'next/image';
+import { CldImage } from 'next-cloudinary';
 import Masonry from 'react-masonry-css'
 
 interface Photo {
@@ -7,6 +8,7 @@ interface Photo {
   alt: string
   width: number
   height: number
+  public_id?: string
 }
 
 interface MasonryGalleryProps {
@@ -34,14 +36,25 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
           key={photo.id} 
           className="mb-4 relative overflow-hidden group"
         >
-          <Image
-            src={photo.url}
-            alt={photo.alt}
-            width={photo.width}
-            height={photo.height}
-            className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
-            loading="lazy"
-          />
+          {photo.public_id ? (
+            <CldImage
+              src={photo.public_id}
+              alt={photo.alt}
+              width={photo.width}
+              height={photo.height}
+              className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          ) : (
+            <Image
+              src={photo.url}
+              alt={photo.alt}
+              width={photo.width}
+              height={photo.height}
+              className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+              loading="lazy"
+            />
+          )}
         </div>
       ))}
     </Masonry>

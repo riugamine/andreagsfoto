@@ -6,21 +6,21 @@ export default function Home() {
   const photos = [
     {
       id: '1',
-      url: '/placeholder.jpg',
+      url: '/images/1.jpg',
       alt: 'Sample photo',
       width: 800,
       height: 600
     },
     {
       id: '2',
-      url: '/placeholder-2.jpg',
+      url: '/images/2.jpeg',
       alt: 'Sample photo 2',
       width: 600,
       height: 800
     },
     {
       id: '3',
-      url: '/placeholder-3.jpg',
+      url: '/images/3.jpg',
       alt: 'Sample photo 3',
       width: 800,
       height: 800
