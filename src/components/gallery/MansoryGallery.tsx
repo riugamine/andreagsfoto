@@ -43,13 +43,13 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
     <>
       <Masonry
         breakpointCols={breakpointColumns}
-        className="flex w-auto -ml-4"
-        columnClassName="pl-4 bg-clip-padding"
+        className="flex w-auto -ml-1"
+        columnClassName="pl-1 bg-clip-padding"
       >
         {photos.map((photo) => (
           <div 
             key={photo._id} 
-            className="mb-4 relative overflow-hidden group cursor-pointer"
+            className="mb-1 relative overflow-hidden group cursor-pointer"
             onClick={() => setSelectedPhoto(photo)}
           >
             {photo.public_id ? (
