@@ -3,12 +3,18 @@ import { CldImage } from 'next-cloudinary';
 import Masonry from 'react-masonry-css'
 
 interface Photo {
-  id: string
+  _id: string
+  title: string
   url: string
   alt: string
   width: number
   height: number
   public_id?: string
+  image?: {
+    asset: {
+      url: string
+    }
+  }
 }
 
 interface MasonryGalleryProps {
@@ -25,6 +31,12 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
     640: 1
   }
 
+  const getImageUrl = (photo: Photo) => {
+    if (photo.public_id) return photo.public_id
+    if (photo.image?.asset.url) return photo.image.asset.url
+    return photo.url
+  }
+
   return (
     <Masonry
       breakpointCols={breakpointColumns}
@@ -33,13 +45,13 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
     >
       {photos.map((photo) => (
         <div 
-          key={photo.id} 
+          key={photo._id } 
           className="mb-4 relative overflow-hidden group"
         >
           {photo.public_id ? (
             <CldImage
               src={photo.public_id}
-              alt={photo.alt}
+              alt={photo.alt || photo.title}
               width={photo.width}
               height={photo.height}
               className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
@@ -47,8 +59,8 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
             />
           ) : (
             <Image
-              src={photo.url}
-              alt={photo.alt}
+              src={getImageUrl(photo)}
+              alt={photo.alt || photo.title}
               width={photo.width}
               height={photo.height}
               className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
