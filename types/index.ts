@@ -9,8 +9,14 @@ export interface SanityImage {
   export interface Photo {
     _id: string
     title: string
-    image: SanityImage
+    url: string
     alt: string
-    description?: string
-    category?: string
+    width: number
+    height: number
+    public_id?: string
+    image?: {
+      asset: {
+        url: string
+      }
+    }
   }

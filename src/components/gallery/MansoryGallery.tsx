@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import { CldImage } from 'next-cloudinary';
 import Masonry from 'react-masonry-css'
-
+import Modal from '@/components/ui/Modal'
+import { useState } from 'react';
 interface Photo {
   _id: string
   title: string
@@ -22,6 +23,7 @@ interface MasonryGalleryProps {
 }
 
 export default function MasonryGallery({ photos }: MasonryGalleryProps) {
+  const [selectedPhoto, setSelectedPhoto]= useState<Photo | null>(null)
   const breakpointColumns = {
     default: 4,
     1536: 4,
@@ -38,37 +40,49 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
   }
 
   return (
-    <Masonry
-      breakpointCols={breakpointColumns}
-      className="flex w-auto -ml-4"
-      columnClassName="pl-4 bg-clip-padding"
-    >
-      {photos.map((photo) => (
-        <div 
-          key={photo._id } 
-          className="mb-4 relative overflow-hidden group"
-        >
-          {photo.public_id ? (
-            <CldImage
-              src={photo.public_id}
-              alt={photo.alt || photo.title}
-              width={photo.width}
-              height={photo.height}
-              className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
-            />
-          ) : (
-            <Image
-              src={getImageUrl(photo)}
-              alt={photo.alt || photo.title}
-              width={photo.width}
-              height={photo.height}
-              className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
-              loading="lazy"
-            />
-          )}
-        </div>
-      ))}
-    </Masonry>
+    <>
+      <Masonry
+        breakpointCols={breakpointColumns}
+        className="flex w-auto -ml-4"
+        columnClassName="pl-4 bg-clip-padding"
+      >
+        {photos.map((photo) => (
+          <div 
+            key={photo._id} 
+            className="mb-4 relative overflow-hidden group cursor-pointer"
+            onClick={() => setSelectedPhoto(photo)}
+          >
+            {photo.public_id ? (
+              <CldImage
+                src={photo.public_id}
+                alt={photo.alt}
+                width={photo.width}
+                height={photo.height}
+                className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+            ) : (
+              <Image
+                src={photo.url}
+                alt={photo.alt}
+                width={photo.width}
+                height={photo.height}
+                className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                loading="lazy"
+              />
+            )}
+          </div>
+        ))}
+      </Masonry>
+
+      {selectedPhoto && (
+        <Modal
+          isOpen={!!selectedPhoto}
+          onClose={() => setSelectedPhoto(null)}
+          photo={selectedPhoto}
+          photos={photos}
+        />
+      )}
+    </>
   )
 }
