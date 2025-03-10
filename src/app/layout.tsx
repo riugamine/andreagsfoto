@@ -1,5 +1,4 @@
 'use client'
-import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -8,11 +7,6 @@ import ThemeToggle from '@/components/ui/ThemeToogle'
 import './globals.css'
 
 const Mont = Montserrat({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'Andrea GS Foto',
-  description: 'Photography Portfolio',
-}
 
 export default function RootLayout({
   children,
