@@ -28,7 +28,7 @@ export default function RootLayout({
         <div className="min-h-screen transition-colors duration-300">
           <header className="py-6 px-4">
             <nav className="container mx-auto flex justify-between items-center">
-              <h1 className="text-3xl font-bold text-center tracking-[0.3em]">
+              <h1 className="text-xl md:text-3xl font-light text-center tracking-[0.3em]">
                 ANDREAGSFOTO
               </h1>
               
@@ -102,7 +102,7 @@ export default function RootLayout({
             {children}
           </main>
           <footer className="py-6 text-center text-gray-600 dark:text-gray-400">
-            <p>© {new Date().getFullYear()} Andrea GS Foto</p>
+            <p>© {new Date().getFullYear()} ANDREAGSFOTO</p>
           </footer>
           </div>
         </ThemeProvider>
