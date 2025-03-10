@@ -1,7 +1,7 @@
 import { client } from './client'
 
 export async function getPhotos() {
-  return await client.fetch(`
+  const photos = await client.fetch(`
     *[_type == "photo"] {
       _id,
       title,
@@ -9,8 +9,15 @@ export async function getPhotos() {
       alt,
       "width": image.asset->metadata.dimensions.width,
       "height": image.asset->metadata.dimensions.height,
+      public_id,
       description,
-      category
+      category,
+      image {
+        asset->
+      }
     }
   `)
+  
+  
+  return photos
 }

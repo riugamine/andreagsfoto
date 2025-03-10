@@ -3,7 +3,8 @@ import Image from 'next/image';
 import { CldImage } from 'next-cloudinary';
 import Masonry from 'react-masonry-css'
 import Modal from '@/components/ui/Modal'
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+
 interface Photo {
   _id: string
   title: string
@@ -24,54 +25,21 @@ interface MasonryGalleryProps {
 }
 
 export default function MasonryGallery({ photos }: MasonryGalleryProps) {
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+
   const breakpointColumns = {
     default: 4,
     1536: 4,
     1280: 3,
     1024: 3,
     768: 2,
-    640: 2  // Cambiado de 1 a 2 columnas para móvil
+    640: 2
   }
 
-  const getImageUrl = (photo: Photo) => {
-    if (photo.public_id) return photo.public_id
-    if (photo.image?.asset.url) return photo.image.asset.url
-    return photo.url
-  }
-
-  useEffect(() => {
-    // Simular tiempo de carga para el skeleton
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [photos]);
-
-  if (isLoading) {
-    return (
-      <Masonry
-        breakpointCols={{
-          default: 4,
-          1536: 4,
-          1280: 3,
-          1024: 3,
-          768: 2,
-          640: 2  // Aseguramos que el skeleton también use 2 columnas en móvil
-        }}
-        className="flex w-auto -ml-1"
-        columnClassName="pl-1 bg-clip-padding"
-      >
-        {[...Array(8)].map((_, index) => (
-          <div key={index} className="mb-1 relative">
-            <div className="w-full aspect-[3/4] bg-gray-200 dark:bg-gray-700 animate-pulse rounded-sm"></div>
-          </div>
-        ))}
-      </Masonry>
-    );
-  }
+  const handleImageLoad = useCallback((id: string) => {
+    setLoadedImages(prev => new Set(prev).add(id));
+  }, []);
 
   return (
     <>
@@ -80,21 +48,27 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
         className="flex w-auto -ml-1"
         columnClassName="pl-1 bg-clip-padding"
       >
-        {photos.map((photo) => (
+        {photos.map((photo, index) => (
           <div 
             key={photo._id} 
             className="mb-1 relative overflow-hidden group cursor-pointer"
             onClick={() => setSelectedPhoto(photo)}
           >
+            {!loadedImages.has(photo._id) && (
+              <div className="w-full aspect-[3/4] bg-gray-200 dark:bg-gray-700 animate-pulse rounded-sm" />
+            )}
             {photo.public_id ? (
               <CldImage
                 src={photo.public_id}
                 alt={photo.alt}
                 width={photo.width}
                 height={photo.height}
-                className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
-                loading="lazy"
-                onLoadingComplete={() => setIsLoading(false)}
+                priority={index < 4} // Añadir prioridad a las primeras 4 imágenes
+                className={`w-full h-auto transition-transform duration-300 group-hover:scale-105 ${
+                  loadedImages.has(photo._id) ? 'opacity-100' : 'opacity-0'
+                }`}
+                loading={index < 4 ? 'eager' : 'lazy'} // Carga inmediata para las primeras 4 imágenes
+                onLoadingComplete={() => handleImageLoad(photo._id)}
               />
             ) : (
               <Image
@@ -102,9 +76,12 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
                 alt={photo.alt}
                 width={photo.width}
                 height={photo.height}
-                className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
-                loading="lazy"
-                onLoadingComplete={() => setIsLoading(false)}
+                priority={index < 4} // Añadir prioridad a las primeras 4 imágenes
+                className={`w-full h-auto transition-transform duration-300 group-hover:scale-105 ${
+                  loadedImages.has(photo._id) ? 'opacity-100' : 'opacity-0'
+                }`}
+                loading={index < 4 ? 'eager' : 'lazy'}
+                onLoadingComplete={() => handleImageLoad(photo._id)}
               />
             )}
           </div>
