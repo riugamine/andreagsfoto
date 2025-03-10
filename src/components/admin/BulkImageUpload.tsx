@@ -21,7 +21,7 @@ export default function BulkImageUpload() {
         file,
         title: file.name.split('.')[0],
         alt: file.name.split('.')[0],
-        category: 'uncategorized'
+        category: 'fotografia'
       }))
 
       await bulkUploadImages(images)
