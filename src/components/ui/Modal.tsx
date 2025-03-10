@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, TouchEvent } from "react";
+import { useEffect, useState, TouchEvent, useCallback } from "react";
 import { CldImage } from "next-cloudinary";
 import Image from "next/image";
 import { Photo } from "../../../types";
@@ -18,25 +18,25 @@ export default function Modal({ isOpen, onClose, photo, photos }: ModalProps) {
 
   const currentIndex = photos.findIndex((p) => p._id === currentPhoto._id);
 
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     const newIndex = currentIndex > 0 ? currentIndex - 1 : photos.length - 1;
     setCurrentPhoto(photos[newIndex]);
-  };
+  }, [currentIndex, photos]);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     const newIndex = currentIndex < photos.length - 1 ? currentIndex + 1 : 0;
     setCurrentPhoto(photos[newIndex]);
-  };
+  }, [currentIndex, photos]);
 
-  const handleTouchStart = (e: TouchEvent) => {
+  const handleTouchStart = useCallback((e: TouchEvent) => {
     setTouchStart(e.touches[0].clientX);
-  };
+  }, []);
 
-  const handleTouchMove = (e: TouchEvent) => {
+  const handleTouchMove = useCallback((e: TouchEvent) => {
     setTouchEnd(e.touches[0].clientX);
-  };
+  }, []);
 
-  const handleTouchEnd = () => {
+  const handleTouchEnd = useCallback(() => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > 50;
@@ -50,7 +50,7 @@ export default function Modal({ isOpen, onClose, photo, photos }: ModalProps) {
     }
     setTouchStart(0);
     setTouchEnd(0);
-  };
+  }, [touchStart, touchEnd, handleNext, handlePrevious]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -58,9 +58,10 @@ export default function Modal({ isOpen, onClose, photo, photos }: ModalProps) {
       if (e.key === "ArrowLeft") handlePrevious();
       if (e.key === "ArrowRight") handleNext();
     };
+
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [currentIndex]);
+  }, [onClose, handleNext, handlePrevious]);
 
   if (!isOpen) return null;
 

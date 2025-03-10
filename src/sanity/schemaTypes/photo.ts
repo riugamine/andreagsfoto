@@ -1,4 +1,4 @@
-export default {
+const photoSchema = {
     name: 'photo',
     title: 'Photo',
     type: 'document',
@@ -36,3 +36,5 @@ export default {
       }
     ]
   }
+
+export default photoSchema

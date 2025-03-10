@@ -1,9 +1,13 @@
 'use client'
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 export default function About() {
   const [imageLoading, setImageLoading] = useState(true);
+
+  const handleImageLoad = useCallback(() => {
+    setImageLoading(false);
+  }, []);
 
   return (
     <section className="min-h-screen py-8">
@@ -65,11 +69,12 @@ export default function About() {
           )}
           <Image
             src="/images/about.jpg"
-            alt="Andrea GS"
+            alt="Andreagsfoto-fotografa"
             fill
+            priority
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover rounded-lg"
-            onLoadingComplete={() => setImageLoading(false)}
+            onLoadingComplete={handleImageLoad}
           />
         </div>
       </div>
