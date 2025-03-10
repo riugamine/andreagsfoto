@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { CldImage } from 'next-cloudinary';
 import Masonry from 'react-masonry-css'
 import Modal from '@/components/ui/Modal'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 interface Photo {
   _id: string
   title: string
@@ -23,7 +23,8 @@ interface MasonryGalleryProps {
 }
 
 export default function MasonryGallery({ photos }: MasonryGalleryProps) {
-  const [selectedPhoto, setSelectedPhoto]= useState<Photo | null>(null)
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const breakpointColumns = {
     default: 4,
     1536: 4,
@@ -37,6 +38,31 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
     if (photo.public_id) return photo.public_id
     if (photo.image?.asset.url) return photo.image.asset.url
     return photo.url
+  }
+
+  useEffect(() => {
+    // Simular tiempo de carga para el skeleton
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [photos]);
+
+  if (isLoading) {
+    return (
+      <Masonry
+        breakpointCols={breakpointColumns}
+        className="flex w-auto -ml-1"
+        columnClassName="pl-1 bg-clip-padding"
+      >
+        {[...Array(8)].map((_, index) => (
+          <div key={index} className="mb-1 relative">
+            <div className="w-full aspect-[3/4] bg-gray-200 dark:bg-gray-700 animate-pulse rounded-sm"></div>
+          </div>
+        ))}
+      </Masonry>
+    );
   }
 
   return (
@@ -60,6 +86,7 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
                 height={photo.height}
                 className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
+                onLoadingComplete={() => setIsLoading(false)}
               />
             ) : (
               <Image
@@ -69,6 +96,7 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
                 height={photo.height}
                 className="w-full h-auto transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
+                onLoadingComplete={() => setIsLoading(false)}
               />
             )}
           </div>

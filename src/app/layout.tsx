@@ -28,9 +28,11 @@ export default function RootLayout({
         <div className="min-h-screen transition-colors duration-300">
           <header className="py-6 px-4">
             <nav className="container mx-auto flex justify-between items-center">
-              <h1 className="text-xl md:text-3xl font-light text-center tracking-[0.3em]">
-                ANDREAGSFOTO
-              </h1>
+              <Link href="/">
+                <h1 className="text-xl md:text-3xl font-light text-center tracking-[0.3em] hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer">
+                  ANDREAGSFOTO
+                </h1>
+              </Link>
               
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-8">
