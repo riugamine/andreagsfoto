@@ -31,7 +31,7 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
     1280: 3,
     1024: 3,
     768: 2,
-    640: 1
+    640: 2  // Cambiado de 1 a 2 columnas para móvil
   }
 
   const getImageUrl = (photo: Photo) => {
@@ -52,7 +52,14 @@ export default function MasonryGallery({ photos }: MasonryGalleryProps) {
   if (isLoading) {
     return (
       <Masonry
-        breakpointCols={breakpointColumns}
+        breakpointCols={{
+          default: 4,
+          1536: 4,
+          1280: 3,
+          1024: 3,
+          768: 2,
+          640: 2  // Aseguramos que el skeleton también use 2 columnas en móvil
+        }}
         className="flex w-auto -ml-1"
         columnClassName="pl-1 bg-clip-padding"
       >
