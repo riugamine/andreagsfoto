@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 import imageCompression from 'browser-image-compression'
+import Image from 'next/image';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -97,10 +98,13 @@ export default function SingleImageUpload() {
       {/* Preview */}
       {preview && (
         <div className="mb-4">
-          <img 
-            src={preview} 
-            alt="Preview" 
-            className="max-h-64 w-full object-contain rounded-lg"
+          <Image
+            src={preview}
+            alt="Preview"
+            width={200}
+            height={200}
+            className="mt-4 rounded-lg"
+            style={{ objectFit: 'cover' }}
           />
         </div>
       )}

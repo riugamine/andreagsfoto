@@ -21,13 +21,11 @@ export default function Modal({
   photos = [], 
   type = children ? 'confirm' : 'gallery'  // Determinar tipo basado en si hay children
 }: ModalProps) {
-  if (!isOpen) return null;
-
   const [currentPhoto, setCurrentPhoto] = useState(photo);
   const [touchStart, setTouchStart] = useState(0);
   const [touchEnd, setTouchEnd] = useState(0);
 
-  // Actualizar currentPhoto cuando cambia la prop photo
+  // Mover todos los hooks antes del return
   useEffect(() => {
     setCurrentPhoto(photo);
   }, [photo]);
@@ -82,6 +80,8 @@ export default function Modal({
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [type, onClose, handleGalleryNavigation]);
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center" onClick={onClose}>
