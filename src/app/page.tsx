@@ -1,10 +1,8 @@
 import MasonryGallery from '@/components/gallery/MansoryGallery'
-import { getPhotos } from '@/sanity/lib/queries'
-export default async function Home() {
-  const photos = await getPhotos()
+export default function Home() {
   return (
     <section className="min-h-screen py-8">
-      <MasonryGallery photos={photos} />
+      <MasonryGallery/>
     </section>
   )
 }

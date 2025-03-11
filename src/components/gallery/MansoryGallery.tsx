@@ -3,7 +3,7 @@ import Image from "next/image";
 import { CldImage } from "next-cloudinary";
 import Masonry from "react-masonry-css";
 import Modal from "@/components/ui/Modal";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react"; // Añadido useEffect
 
 interface Photo {
   _id: string;
@@ -12,28 +12,34 @@ interface Photo {
   alt: string;
   width: number;
   height: number;
-  public_id?: string;
-  uploadDate?: string;
-  image?: {
-    asset: {
-      url: string;
-    };
-  };
+  public_id: string;
+  uploadDate: string;
 }
 
-interface MasonryGalleryProps {
-  photos: Photo[];
-}
-
-export default function MasonryGallery({
-  photos: initialPhotos,
-}: MasonryGalleryProps) {
+export default function MasonryGallery() { // Removida la prop photos
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-  const [photos, setPhotos] = useState(
-    [...initialPhotos].sort((a, b) => a.title.localeCompare(b.title))
-  );
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [sortType, setSortType] = useState("title");
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch photos from Cloudinary
+  useEffect(() => {
+    const fetchPhotos = async () => {
+      try {
+        const response = await fetch('/api/cloudinary/list');
+        const data = await response.json();
+        setPhotos(data.sort((a: Photo, b: Photo) => a.title.localeCompare(b.title)));
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching photos:', error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchPhotos();
+  }, []);
+
   
   const breakpointColumns = {
     default: 4,
