@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react'
-import { bulkUploadImages } from '@/lib/sanity'
 import { toast, Toaster } from 'react-hot-toast'
 import imageCompression from 'browser-image-compression'
 
@@ -11,6 +10,11 @@ const compressionOptions = {
   maxSizeMB: 10,
   maxWidthOrHeight: 1920,
   useWebWorker: true,
+}
+
+interface UploadResponse {
+  public_id: string;
+  secure_url: string;
 }
 
 export default function BulkImageUpload() {
@@ -35,14 +39,29 @@ export default function BulkImageUpload() {
       }
 
       const compressedFile = await imageCompression(file, compressionOptions)
-      
-      // Crear un nuevo File con el mismo nombre
       return new File([compressedFile], file.name, {
         type: compressedFile.type,
       })
     } catch (error) {
       throw new Error(`Error compressing ${file.name}`)
     }
+  }
+
+  const uploadToCloudinary = async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('upload_preset', 'andreagsfoto')
+
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    )
+
+    if (!response.ok) throw new Error('Upload failed')
+    return response.json()
   }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,20 +86,10 @@ export default function BulkImageUpload() {
 
     try {
       const totalFiles = files.length
-      const compressedFiles = await Promise.all(
-        files.map(async (file) => {
-          const compressed = await compressImage(file)
-          return {
-            file: compressed,
-            title: file.name.split('.')[0],
-            alt: file.name.split('.')[0],
-            category: 'fotografia'
-          }
-        })
-      )
-
-      for (let i = 0; i < compressedFiles.length; i++) {
-        await bulkUploadImages([compressedFiles[i]])
+      
+      for (let i = 0; i < files.length; i++) {
+        const compressed = await compressImage(files[i])
+        await uploadToCloudinary(compressed)
         setProgress(((i + 1) / totalFiles) * 100)
       }
 
@@ -98,6 +107,7 @@ export default function BulkImageUpload() {
 
   return (
     <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Bulk image upload</h2>
       <Toaster position="top-right" />
       <input
         type="file"

@@ -157,6 +157,7 @@ export default function MasonryGallery({
           onClose={() => setSelectedPhoto(null)}
           photo={selectedPhoto}
           photos={photos}
+          // type="gallery" no es necesario especificarlo ya que es el valor por defecto
         />
       )}
     </>
