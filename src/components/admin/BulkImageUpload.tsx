@@ -8,7 +8,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 const compressionOptions = {
-  maxSizeMB: 4,
+  maxSizeMB: 10,
   maxWidthOrHeight: 1920,
   useWebWorker: true,
 }
@@ -24,7 +24,7 @@ export default function BulkImageUpload() {
       throw new Error(`File type ${file.type} is not supported`)
     }
     if (file.size > MAX_FILE_SIZE) {
-      throw new Error(`File ${file.name} is too large. Max size is 5MB`)
+      throw new Error(`File ${file.name} is too large. Max size is 10MB`)
     }
   }
 
@@ -108,7 +108,7 @@ export default function BulkImageUpload() {
         disabled={uploading}
       />
       <div className="text-sm text-gray-500 mb-2">
-        Supported formats: JPG, PNG, WebP (max 5MB)
+        Supported formats: JPG, PNG, WebP (max 10MB)
       </div>
       {uploading && (
         <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4 dark:bg-gray-700">
