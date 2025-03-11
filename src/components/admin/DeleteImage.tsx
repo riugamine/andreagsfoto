@@ -3,9 +3,7 @@ import { useEffect, useState } from 'react'
 import { CldImage } from "next-cloudinary"
 import { toast, Toaster } from 'react-hot-toast'
 import Modal from "@/components/ui/Modal"
-import { getPhotos } from '@/sanity/lib/queries'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'  // Añadir esta importación
 
 interface Photo {
   _id: string;
@@ -25,19 +23,20 @@ export default function DeleteImage() {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)  // Nuevo estado
+  const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     const loadPhotos = async () => {
       setIsLoading(true)
       try {
-        const fetchedPhotos = await getPhotos()
-        setPhotos(fetchedPhotos || [])  // Aseguramos que siempre sea un array
+        const response = await fetch('/api/cloudinary/list')
+        const data = await response.json()
+        setPhotos(data || [])
       } catch (error) {
         console.error('Error loading photos:', error)
         toast.error('Error loading photos')
-        setPhotos([])  // En caso de error, establecemos un array vacío
+        setPhotos([])
       } finally {
         setIsLoading(false)
       }
