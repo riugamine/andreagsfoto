@@ -66,6 +66,7 @@ export default function SingleImageUpload() {
       const formData = new FormData()
       formData.append('file', compressedFile)
       formData.append('upload_preset', 'andreagsfoto')
+      formData.append('folder', 'andreagsfoto/porfolio');
       formData.append('public_id', title.trim())
 
       const response = await fetch(

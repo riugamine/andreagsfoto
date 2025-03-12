@@ -9,7 +9,7 @@ cloudinary.config({
 export async function GET() {
   try {
     const result = await cloudinary.search
-      .expression('resource_type:image')
+      .expression('folder:andreagsfoto/porfolio AND resource_type:image')
       .sort_by('created_at', 'desc')
       .max_results(500)
       .execute();
