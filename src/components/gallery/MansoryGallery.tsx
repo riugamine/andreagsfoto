@@ -89,10 +89,6 @@ export default function MasonryGallery() { // Removida la prop photos
                     loading={index < 4 ? "eager" : "lazy"}
                     onLoadingComplete={() => handleImageLoad(photo._id)}
                   />
-                  {/* Mostrar el nombre del archivo extraído del public_id */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs p-1 truncate">
-                    {photo.title.split('/').pop()}
-                  </div>
                 </>
               ) : (
                 <Image
