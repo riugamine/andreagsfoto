@@ -1,105 +1,90 @@
-'use client'
+// Remove 'use client' as metadata needs to be handled server-side
 import { Montserrat } from 'next/font/google'
-import Link from 'next/link'
-import { useState } from 'react'
+import { Metadata } from 'next'
+import Navigation from '@/components/navigation/Navigation'
 import { ThemeProvider } from '@/components/providers/ThemeProviders'
-import ThemeToggle from '@/components/ui/ThemeToogle'
 import './globals.css'
 
 const Mont = Montserrat({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: {
+    default: 'Andreagsfoto | Fotografía Profesional',
+    template: '%s | Andreagsfoto'
+  },
+  description: 'Fotógrafa profesional especializada en bodas, eventos especiales y retratos en Venezuela. Capturando momentos únicos y memorables con un estilo elegante y natural.',
+  keywords: ['fotografía', 'fotografía de bodas', 'fotógrafa profesional', 'fotógrafa Venezuela', 'Andreagsfoto', 'bodas Venezuela', 'fotografía eventos Venezuela'],
+  creator: 'Andreagsfoto',
+  openGraph: {
+    title: 'Andreagsfoto | Fotografía Profesional',
+    description: 'Fotógrafa profesional especializada en bodas, eventos especiales y retratos en Venezuela. Capturando momentos únicos y memorables con un estilo elegante y natural.',
+    url: 'https://andreagsfoto.com',
+    siteName: 'Andreagsfoto',
+    images: [
+      {
+        url: 'https://res.cloudinary.com/da95ksabl/image/upload/v1741961209/ag_logo_yk9ono.png',
+        width: 1080,
+        height: 1080,
+        alt: 'Andreagsfoto - Fotografía Profesional',
+        type: 'image/png',
+      },
+      {
+        // Instagram optimized version (1:1 square)
+        url: 'https://res.cloudinary.com/da95ksabl/image/upload/c_fill,g_center,h_1080,w_1080/v1741961209/ag_logo_yk9ono.png',
+        width: 1080,
+        height: 1080,
+        alt: 'Andreagsfoto - Fotografía Profesional Instagram',
+        type: 'image/png',
+      }
+    ],
+    locale: 'es_VE',
+    type: 'website',
+  },
+  // Add Instagram-specific metadata
+  other: {
+    'instagram:card': 'summary_large_image',
+    'instagram:title': 'Andreagsfoto | Fotografía de Bodas y Eventos',
+    'instagram:description': 'Capturando momentos únicos en Venezuela 📸✨',
+    'instagram:image': 'https://res.cloudinary.com/da95ksabl/image/upload/c_fill,g_center,h_1080,w_1080/v1741961209/ag_logo_yk9ono.png',
+    'instagram:image:alt': 'Andreagsfoto - Fotografía Profesional',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  twitter: {
+    title: 'Andrea GS Foto - Fotografía Profesional en Venezuela',
+    card: 'summary_large_image',
+    description: 'Fotógrafa profesional especializada en bodas, eventos especiales y retratos en Venezuela.',
+    images: ['https://res.cloudinary.com/da95ksabl/image/upload/v1741961209/ag_logo_yk9ono.png'],
+  },
+  // Removido el campo verification ya que usas verificación DNS
+}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${Mont.className} `}>
+    <html lang="es" suppressHydrationWarning>
+      <body className={Mont.className}>
         <ThemeProvider>
-        <div className="min-h-screen transition-colors duration-300">
-          <header className="py-6 px-4">
-            <nav className="container mx-auto flex justify-between items-center">
-              <Link href="/">
-                <h1 className="text-xl md:text-3xl font-light text-center tracking-[0.3em] hover:text-gray-600 dark:hover:text-gray-300 transition-colors cursor-pointer">
-                  ANDREAGSFOTO
-                </h1>
-              </Link>
-              
-              {/* Desktop Navigation */}
-              <div className="hidden md:flex items-center space-x-8">
-                <Link href="/" className="tracking-[0.2em] hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                  HOME
-                </Link>
-                <Link href="/about" className="tracking-[0.2em] hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                  ABOUT
-                </Link>
-                <ThemeToggle />
-              </div>
-
-              {/* Mobile Menu Button and Theme Toggle */}
-              <div className="md:hidden flex items-center space-x-4">
-                <ThemeToggle />
-                <button 
-                  className="p-2"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
-                  <svg 
-                    className="w-6 h-6" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    {isMenuOpen ? (
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth={2} 
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    ) : (
-                      <path 
-                        strokeLinecap="round" 
-                        strokeLinejoin="round" 
-                        strokeWidth={2} 
-                        d="M4 6h16M4 12h16M4 18h16"
-                      />
-                    )}
-                  </svg>
-                </button>
-              </div>
-            </nav>
-
-            {/* Mobile Menu */}
-            {isMenuOpen && (
-              <div className="md:hidden absolute top-20 left-0 right-0 bg-black dark:bg-gray-900 text-white shadow-lg z-50">
-                <div className="flex flex-col space-y-4 p-4">
-                  <Link 
-                    href="/" 
-                    className="tracking-[0.2em] hover:text-gray-300 transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    HOME
-                  </Link>
-                  <Link 
-                    href="/about" 
-                    className="tracking-[0.2em] hover:text-gray-300 transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    ABOUT
-                  </Link>
-                </div>
-              </div>
-            )}
-          </header>
-          <main className="container mx-auto px-4">
-            {children}
-          </main>
-          <footer className="py-6 text-center text-gray-600 dark:text-gray-400">
-            <p>© {new Date().getFullYear()} ANDREAGSFOTO</p>
-          </footer>
+          <div className="min-h-screen transition-colors duration-300">
+            <Navigation />
+            <main className="container mx-auto px-4">
+              {children}
+            </main>
+            <footer className="py-6 text-center text-gray-600 dark:text-gray-400">
+              <p>© {new Date().getFullYear()} ANDREAGSFOTO</p>
+            </footer>
           </div>
         </ThemeProvider>
       </body>

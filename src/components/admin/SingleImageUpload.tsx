@@ -18,6 +18,7 @@ export default function SingleImageUpload() {
   const [title, setTitle] = useState('')
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
+  const [selectedFolder, setSelectedFolder] = useState('andreagsfoto/porfolio')
 
   const validateFile = (file: File) => {
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -65,8 +66,14 @@ export default function SingleImageUpload() {
       const compressedFile = await compressImage(file)
       const formData = new FormData()
       formData.append('file', compressedFile)
-      formData.append('upload_preset', 'andreagsfoto')
-      formData.append('folder', 'andreagsfoto/porfolio');
+      
+      // Use different presets based on selected folder
+      if (selectedFolder === 'andreagsfoto/porfolio') {
+        formData.append('upload_preset', 'andreagsfoto')
+      } else {
+        formData.append('upload_preset', 'andreagsfoto-wedding')
+      }
+      
       formData.append('public_id', title.trim())
 
       const response = await fetch(
@@ -93,8 +100,24 @@ export default function SingleImageUpload() {
 
   return (
     <div className="p-4">
-        <h2 className="text-2xl font-bold mb-4">Single Image Upload</h2>
+      <h2 className="text-2xl font-bold mb-4">Single Image Upload</h2>
       <Toaster position="top-right" />
+      
+      {/* Folder selector */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Select destination folder:
+        </label>
+        <select 
+          value={selectedFolder}
+          onChange={(e) => setSelectedFolder(e.target.value)}
+          className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-white"
+          disabled={uploading}
+        >
+          <option value="andreagsfoto/porfolio">Home Page Gallery</option>
+          <option value="andreagsfoto/wedding-stories">Wedding Stories Gallery</option>
+        </select>
+      </div>
       
       {/* Preview */}
       {preview && (

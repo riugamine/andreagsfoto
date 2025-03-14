@@ -22,6 +22,7 @@ export default function BulkImageUpload() {
   const [uploading, setUploading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [uploadComplete, setUploadComplete] = useState(false)
+  const [selectedFolder, setSelectedFolder] = useState('andreagsfoto/porfolio')
 
   const validateFile = (file: File) => {
     if (!ALLOWED_TYPES.includes(file.type)) {
@@ -50,8 +51,13 @@ export default function BulkImageUpload() {
   const uploadToCloudinary = async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('upload_preset', 'andreagsfoto')
-    formData.append('folder', 'andreagsfoto/porfolio');
+    
+    // Use different presets based on selected folder
+    if (selectedFolder === 'andreagsfoto/porfolio') {
+      formData.append('upload_preset', 'andreagsfoto')
+    } else {
+      formData.append('upload_preset', 'andreagsfoto-wedding')
+    }
 
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -110,6 +116,23 @@ export default function BulkImageUpload() {
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Bulk image upload</h2>
       <Toaster position="top-right" />
+      
+      {/* Folder selector */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Select destination folder:
+        </label>
+        <select 
+          value={selectedFolder}
+          onChange={(e) => setSelectedFolder(e.target.value)}
+          className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-white"
+          disabled={uploading}
+        >
+          <option value="andreagsfoto/porfolio">Home Page Gallery</option>
+          <option value="andreagsfoto/wedding-stories">Wedding Stories Gallery</option>
+        </select>
+      </div>
+      
       <input
         type="file"
         multiple

@@ -12,11 +12,12 @@ interface Photo {
   width: number;
   height: number;
 }
+
 interface ModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    children: React.ReactNode;
-  }
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}
 
 export default function DeleteImage() {
   const [photos, setPhotos] = useState<Photo[]>([])
@@ -24,26 +25,32 @@ export default function DeleteImage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedFolder, setSelectedFolder] = useState('andreagsfoto/porfolio')
   const router = useRouter()
 
   useEffect(() => {
-    const loadPhotos = async () => {
-      setIsLoading(true)
-      try {
-        const response = await fetch('/api/cloudinary/list')
-        const data = await response.json()
-        setPhotos(data || [])
-      } catch (error) {
-        console.error('Error loading photos:', error)
-        toast.error('Error loading photos')
-        setPhotos([])
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    
     loadPhotos()
-  }, [])
+  }, [selectedFolder])
+
+  const loadPhotos = async () => {
+    setIsLoading(true)
+    try {
+      // Use different endpoint based on selected folder
+      const endpoint = selectedFolder.includes('wedding-stories') 
+        ? '/api/cloudinary/wedding-list' 
+        : '/api/cloudinary/list'
+      
+      const response = await fetch(endpoint)
+      const data = await response.json()
+      setPhotos(data || [])
+    } catch (error) {
+      console.error('Error loading photos:', error)
+      toast.error('Error loading photos')
+      setPhotos([])
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleDelete = async (photo: Photo) => {
     setSelectedPhoto(photo)
@@ -81,13 +88,29 @@ export default function DeleteImage() {
       <h2 className="text-2xl font-bold mb-4">Delete Images</h2>
       <Toaster position="top-right" />
 
+      {/* Folder selector */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Select folder to manage:
+        </label>
+        <select 
+          value={selectedFolder}
+          onChange={(e) => setSelectedFolder(e.target.value)}
+          className="w-full p-2 border rounded bg-white dark:bg-gray-800 dark:text-white mb-4"
+          disabled={isLoading || isDeleting}
+        >
+          <option value="andreagsfoto/porfolio">Home Page Gallery</option>
+          <option value="andreagsfoto/wedding-stories">Wedding Stories Gallery</option>
+        </select>
+      </div>
+
       {isLoading ? (
         <div className="flex justify-center items-center min-h-[200px]">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : photos.length === 0 ? (
         <div className="text-center py-8 text-gray-500">
-          No images found
+          No images found in this folder
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
