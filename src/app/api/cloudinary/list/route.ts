@@ -4,9 +4,13 @@ cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  timeout: 60000, // Increase timeout to 60 seconds
 });
 
-export async function GET() {
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
+
+async function fetchWithRetry(retryCount = 0) {
   try {
     const result = await cloudinary.search
       .expression('folder:andreagsfoto/porfolio AND resource_type:image')
@@ -15,6 +19,25 @@ export async function GET() {
       .sort_by('created_at', 'desc')
       .max_results(500)
       .execute();
+
+    return result;
+  } catch (error) {
+    if (retryCount < MAX_RETRIES && (error as { code?: string }).code === 'ECONNRESET' || (error as { code?: string }).code === 'ETIMEDOUT') {
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * (retryCount + 1)));
+      return fetchWithRetry(retryCount + 1);
+    }
+    throw error;
+  }
+}
+
+export async function GET() {
+  try {
+    const result = await fetchWithRetry();
+
+    if (!result?.resources || !Array.isArray(result.resources)) {
+      console.error('Invalid response format from Cloudinary');
+      return Response.json([]);
+    }
 
     const photos = result.resources.map((resource: any) => ({
       _id: resource.asset_id,
@@ -25,14 +48,11 @@ export async function GET() {
       height: resource.height,
       alt: resource.filename || resource.public_id.split('/').pop(),
       uploadDate: resource.created_at,
-      // Incluir cualquier metadato o contexto disponible
-      context: resource.context || {},
-      metadata: resource.metadata || {}
     }));
 
     return Response.json(photos);
   } catch (error) {
     console.error('Error fetching images:', error);
-    return Response.json({ error: 'Error fetching images' }, { status: 500 });
+    return Response.json([], { status: 200 }); // Return empty array instead of error
   }
 }

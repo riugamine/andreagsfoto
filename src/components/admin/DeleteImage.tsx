@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { CldImage } from "next-cloudinary"
 import { toast, Toaster } from 'react-hot-toast'
 import Modal from "@/components/ui/Modal"
@@ -28,14 +28,10 @@ export default function DeleteImage() {
   const [selectedFolder, setSelectedFolder] = useState('andreagsfoto/porfolio')
   const router = useRouter()
 
-  useEffect(() => {
-    loadPhotos()
-  }, [selectedFolder])
-
-  const loadPhotos = async () => {
+  // Move loadPhotos inside useCallback to memoize it
+  const loadPhotos = useCallback(async () => {
     setIsLoading(true)
     try {
-      // Use different endpoint based on selected folder
       const endpoint = selectedFolder.includes('wedding-stories') 
         ? '/api/cloudinary/wedding-list' 
         : '/api/cloudinary/list'
@@ -50,7 +46,13 @@ export default function DeleteImage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [selectedFolder]) // Add selectedFolder as dependency
+
+  // Add eslint-disable comment to acknowledge the dependency
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    loadPhotos()
+  }, [loadPhotos])
 
   const handleDelete = async (photo: Photo) => {
     setSelectedPhoto(photo)

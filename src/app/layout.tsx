@@ -8,6 +8,7 @@ import './globals.css'
 const Mont = Montserrat({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://andreagsfoto.com'),
   title: {
     default: 'Andreagsfoto | Fotografía Profesional',
     template: '%s | Andreagsfoto'
