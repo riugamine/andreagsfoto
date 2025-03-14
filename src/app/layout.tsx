@@ -23,31 +23,38 @@ export const metadata: Metadata = {
     siteName: 'Andreagsfoto',
     images: [
       {
-        url: 'https://res.cloudinary.com/da95ksabl/image/upload/v1741961209/ag_logo_yk9ono.png',
-        width: 1080,
-        height: 1080,
+        url: 'https://res.cloudinary.com/da95ksabl/image/upload/v1741966194/ag_logo_er29xh.jpg',
+        width: 1200,
+        height: 630,
         alt: 'Andreagsfoto - Fotografía Profesional',
         type: 'image/png',
+        secureUrl: 'https://res.cloudinary.com/da95ksabl/image/upload/v1741966194/ag_logo_er29xh.jpg',
       },
       {
-        // Instagram optimized version (1:1 square)
-        url: 'https://res.cloudinary.com/da95ksabl/image/upload/c_fill,g_center,h_1080,w_1080/v1741961209/ag_logo_yk9ono.png',
-        width: 1080,
-        height: 1080,
+        url: 'https://res.cloudinary.com/da95ksabl/image/upload/c_scale,w_1200,h_630/v1741966194/ag_logo_er29xh.jpg',
+        width: 1200,
+        height: 630,
         alt: 'Andreagsfoto - Fotografía Profesional Instagram',
         type: 'image/png',
+        secureUrl: 'https://res.cloudinary.com/da95ksabl/image/upload/c_scale,w_1200,h_630/v1741966194/ag_logo_er29xh.jpg',
       }
     ],
     locale: 'es_VE',
     type: 'website',
   },
-  // Add Instagram-specific metadata
   other: {
+    // Instagram metadata
     'instagram:card': 'summary_large_image',
     'instagram:title': 'Andreagsfoto | Fotografía de Bodas y Eventos',
     'instagram:description': 'Capturando momentos únicos en Venezuela 📸✨',
     'instagram:image': 'https://res.cloudinary.com/da95ksabl/image/upload/c_fill,g_center,h_1080,w_1080/v1741961209/ag_logo_yk9ono.png',
     'instagram:image:alt': 'Andreagsfoto - Fotografía Profesional',
+    // WhatsApp metadata
+    'whatsapp:card': 'summary_large_image',
+    'whatsapp:title': 'Andreagsfoto | Fotografía Profesional',
+    'whatsapp:description': 'Fotógrafa profesional especializada en bodas y eventos en Venezuela 📸',
+    'whatsapp:image': 'https://res.cloudinary.com/da95ksabl/image/upload/v1741961209/ag_logo_yk9ono.png',
+    'whatsapp:image:alt': 'Andreagsfoto - Fotografía Profesional',
   },
   robots: {
     index: true,
