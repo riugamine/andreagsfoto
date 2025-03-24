@@ -92,6 +92,17 @@ export default function RootLayout({
             </main>
             <footer className="py-6 text-center text-gray-600 dark:text-gray-400">
               <p>© {new Date().getFullYear()} ANDREAGSFOTO</p>
+              <p className="text-sm mt-2">
+                Powered by{' '}
+                <a 
+                  href="https://www.instagram.com/joseangelweb_" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-pink-600 transition-colors"
+                >
+                  joseangelweb
+                </a>
+              </p>
             </footer>
           </div>
         </ThemeProvider>
